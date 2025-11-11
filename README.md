@@ -1,0 +1,1 @@
+# AnaliseSincronizacao.md

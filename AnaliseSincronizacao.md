@@ -233,8 +233,5 @@ Com eventos: sincronização eficiente e comunicação ordenada entre threads.
 A abordagem com eventos (wait/notify) é a mais eficaz, pois garante sincronização real, evita busy-wait e otimiza o uso de recursos.
 É a solução ideal para cenários de produtor/consumidor e aplicações que exigem alto desempenho com segurança de dados.
 
-✍️ Autor: [Seu Nome Aqui]
-📅 Data: [Inserir data de entrega]
-📘 Disciplina: Programação Concorrente em Java
 
 

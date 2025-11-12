@@ -11,7 +11,7 @@
 6. [Atividade Prática 02 – Sincronização com Monitores (`MeuDadoMonitorJava`)](#atividade-prática-02--sincronização-com-monitores-meudadomonitorjava)  
 7. [Atividade Prática 03 – Sincronização com Eventos (`MeuDadoEventJava`)](#atividade-prática-03--sincronização-com-eventos-meudadoeventjava)  
 8. [Comparativo entre as Abordagens](#comparativo-entre-as-abordagens)  
-9. [Conclusão e Opinião Técnica](#conclusão-e-opinião-técnica)  
+9. [Conclusão e Opinião Técnica](#conclusão-e-opinião-técnica)
 
 ---
 
@@ -98,6 +98,9 @@ class MeuDadoThreadsJava {
         new Thread(new ConsumidorThreads(dado)).start();
     }
 }
+💻 Saída Observada
+makefile
+Copiar código
 Produtor: 0
 Consumidor: 0
 Produtor: 1
@@ -107,6 +110,19 @@ Consumidor: 2
 Produtor: 4
 Consumidor: 5
 ...
+🧪 Análise Técnica
+❌ Sem exclusão mútua
+
+❌ Condição de corrida
+
+⚠️ Valor depende da ordem de execução das threads
+
+💥 Dados inconsistentes e imprevisíveis
+
+🔒 Atividade Prática 02 – Sincronização com Monitores (MeuDadoMonitorJava)
+🔍 Código Principal
+java
+Copiar código
 class MeuDadoMonitor {
     private int Dado;
     private boolean Pronto;
@@ -135,12 +151,28 @@ class MeuDadoMonitor {
         }
     }
 }
+💻 Saída Observada
+yaml
+Copiar código
 Armazenar Iniciando...
 Armazenar Finalizando...
 Produtor usando Monitor: 0
 Carregar Iniciando...
 Carregar Finalizando...
 Consumidor usando Monitor: 0
+🧪 Análise Técnica
+✅ Usa monitores (synchronized) para exclusão mútua
+
+✅ Dados consistentes
+
+⚠️ Usa espera ativa (while(!Ocupado)), desperdiçando CPU
+
+⚙️ Sincronização correta, porém ineficiente em desempenho
+
+🔔 Atividade Prática 03 – Sincronização com Eventos (MeuDadoEventJava)
+🔍 Código Principal
+java
+Copiar código
 class MeuDadoEvent {
     private int Dado;
     private boolean Pronto;
@@ -163,8 +195,46 @@ class MeuDadoEvent {
         return this.Dado;
     }
 }
+💻 Saída Observada
+yaml
+Copiar código
 Produtor usando Eventos: 0
 Consumidor usando Eventos: 0
 Produtor usando Eventos: 1
 Consumidor usando Eventos: 1
 ...
+🧪 Análise Técnica
+✅ Usa wait() e notify() para comunicação entre threads
+
+✅ Evita espera ativa (consumo de CPU reduzido)
+
+✅ Execução perfeitamente alternada e sincronizada
+
+🧠 Solução elegante, eficiente e escalável
+
+⚖️ Comparativo entre as Abordagens
+Critério	🟥 Sem Sincronização	🟨 Com Monitores	🟩 Com Eventos
+Integridade dos Dados	❌ Comprometida	✅ Mantida	✅ Mantida
+Ordem de Execução	Aleatória	Parcialmente controlada	Totalmente controlada
+Uso de CPU	Médio	Alto (busy-wait)	Baixo
+Complexidade	Baixa	Média	Alta
+Desempenho Geral	⚠️ Instável	🟡 Regular	🟢 Excelente
+
+🧭 Conclusão e Opinião Técnica
+A evolução das três versões demonstra claramente o impacto da sincronização em aplicações multithreaded:
+
+Sem sincronização: comportamento imprevisível e perda de integridade.
+
+Com monitores: solução segura, porém com espera ativa (ineficiente).
+
+Com eventos: sincronização eficiente e comunicação ordenada entre threads.
+
+💬 Opinião Pessoal
+A abordagem com eventos (wait/notify) é a mais eficaz, pois garante sincronização real, evita busy-wait e otimiza o uso de recursos.
+É a solução ideal para cenários de produtor/consumidor e aplicações que exigem alto desempenho com segurança de dados.
+
+✍️ Autor: [Seu Nome Aqui]
+📅 Data: [Inserir data de entrega]
+📘 Disciplina: Programação Concorrente em Java
+
+

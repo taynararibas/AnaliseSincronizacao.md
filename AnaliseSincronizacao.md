@@ -67,3 +67,104 @@ class MeuDadoThreads {
     public void armazenar(int Dado) { this.Dado = Dado; }
     public int carregar() { return this.Dado; }
 }
+
+class ProdutorThreads implements Runnable {
+    MeuDadoThreads dado;
+    public ProdutorThreads(MeuDadoThreads dado) { this.dado = dado; }
+    public void run() {
+        for (int i = 0; i < 30; i++) {
+            dado.armazenar(i);
+            System.out.println("Produtor: " + i);
+            try { Thread.sleep((int)(Math.random() * 500)); } catch (InterruptedException e) {}
+        }
+    }
+}
+
+class ConsumidorThreads implements Runnable {
+    MeuDadoThreads dado;
+    public ConsumidorThreads(MeuDadoThreads dado) { this.dado = dado; }
+    public void run() {
+        for (int i = 0; i < 30; i++) {
+            System.out.println("Consumidor: " + dado.carregar());
+            try { Thread.sleep((int)(Math.random() * 500)); } catch (InterruptedException e) {}
+        }
+    }
+}
+
+class MeuDadoThreadsJava {
+    public static void main(String[] args) {
+        MeuDadoThreads dado = new MeuDadoThreads();
+        new Thread(new ProdutorThreads(dado)).start();
+        new Thread(new ConsumidorThreads(dado)).start();
+    }
+}
+Produtor: 0
+Consumidor: 0
+Produtor: 1
+Consumidor: 1
+Produtor: 3
+Consumidor: 2
+Produtor: 4
+Consumidor: 5
+...
+class MeuDadoMonitor {
+    private int Dado;
+    private boolean Pronto;
+    private boolean Ocupado;
+
+    public MeuDadoMonitor() {
+        Pronto = false;
+        Ocupado = true;
+    }
+
+    public void armazenar(int Dado) {
+        while (!Ocupado);
+        synchronized (this) {
+            this.Dado = Dado;
+            Ocupado = false;
+            Pronto = true;
+        }
+    }
+
+    public int carregar() {
+        while (!Pronto);
+        synchronized (this) {
+            Pronto = false;
+            Ocupado = true;
+            return this.Dado;
+        }
+    }
+}
+Armazenar Iniciando...
+Armazenar Finalizando...
+Produtor usando Monitor: 0
+Carregar Iniciando...
+Carregar Finalizando...
+Consumidor usando Monitor: 0
+class MeuDadoEvent {
+    private int Dado;
+    private boolean Pronto;
+
+    public MeuDadoEvent() { Pronto = false; }
+
+    public synchronized void armazenar(int Data) {
+        while (Pronto)
+            try { wait(); } catch (InterruptedException e) {}
+        this.Dado = Data;
+        Pronto = true;
+        notify();
+    }
+
+    public synchronized int carregar() {
+        while (!Pronto)
+            try { wait(); } catch (InterruptedException e) {}
+        Pronto = false;
+        notify();
+        return this.Dado;
+    }
+}
+Produtor usando Eventos: 0
+Consumidor usando Eventos: 0
+Produtor usando Eventos: 1
+Consumidor usando Eventos: 1
+...
